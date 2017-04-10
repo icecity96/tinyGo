@@ -129,7 +129,6 @@ func (g *Grammar) First() (first SymbolMap) {
 			}
 		}
 	}
-	// TODO first clear
 	return
 }
 
