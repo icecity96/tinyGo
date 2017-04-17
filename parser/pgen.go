@@ -3,6 +3,8 @@ package parser
 import (
 	"fmt"
 	"log"
+	"sort"
+	"strings"
 )
 
 // Action is an entry in the action table
@@ -79,7 +81,7 @@ func (is ItemSet) Dump(log log.Logger) {
 // construct LR CLOSURE
 func (is ItemSet) Closure(grammar *Grammar) {
 	added := make(map[string]bool)
-	//first := grammar.First()
+	first := grammar.First()
 	for changed := true; changed; {
 		changed = false
 		for item := range is {
@@ -92,17 +94,18 @@ func (is ItemSet) Closure(grammar *Grammar) {
 				for _, rule := range grammar.rules {
 					if rule.symbol == sym {
 						if pos := item.pos; pos+1 == len(item.rule.pattern) {
-//							is.Add(Item{rule, item.next,0})
-							is.Add(Item{rule, "",0})
+							is.Add(Item{rule, item.next,0})
+							//is.Add(Item{rule, "",0})
 						} else {
-							/*
 							var nextString string
+							var nstring []string
 							for set := range first[item.rule.pattern[pos]] {
-								nextString += set + "/"
+								nstring = append(nstring,set)
 							}
+							sort.Slice(nstring,func(i,j int) bool { return nstring[i] < nstring[j]})
+							nextString = strings.Join(nstring,"/")
 							is.Add(Item{rule,nextString,0})
-							*/
-							is.Add(Item{rule,"",0})
+							//is.Add(Item{rule,"",0})
 						}
 						changed = true
 						added[sym] = true
@@ -118,8 +121,8 @@ func (is ItemSet) Goto(grammar *Grammar, x string) ItemSet {
 	out := make(ItemSet)	// 将J初始化为空
 	for item := range is {
 		if sym, end := item.NextSym(); !end && sym == x {
-			//out.Add(Item{item.rule, item.next,item.pos+1})
-			out.Add(Item{item.rule, "",item.pos+1})
+			out.Add(Item{item.rule, item.next,item.pos+1})
+			//out.Add(Item{item.rule, "",item.pos+1})
 		}
 	}
 	out.Closure(grammar)
@@ -134,8 +137,8 @@ func ComputeActions(grammar *Grammar) ActionTable {
 
 	// 将C初始化为{CLOSURE}([S'->.S,$])
 	states := []ItemSet{
-//		ItemSet{Item{grammar.rules[0],"EOF",0}: true},
-		ItemSet{Item{grammar.rules[0],"",0}: true},
+		ItemSet{Item{grammar.rules[0],"EOF",0}: true},
+//		ItemSet{Item{grammar.rules[0],"",0}: true},
 	}
 	states[0].Closure(grammar)
 
