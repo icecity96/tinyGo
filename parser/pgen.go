@@ -98,12 +98,23 @@ func (is ItemSet) Closure(grammar *Grammar) {
 							//is.Add(Item{rule, "",0})
 						} else {
 							var nextString string
+							mstring := make(map[string]bool)
 							var nstring []string
-							for set := range first[item.rule.pattern[pos]] {
-								nstring = append(nstring,set)
+							for set := range first[item.rule.pattern[pos+1]] {
+								if set=="" {
+									for _,m := range strings.Split(item.next,"#") {
+										mstring[m] = true
+									}
+								}
+								mstring[set] = true
+							}
+							for ms := range mstring {
+								if mstring[ms] {
+									nstring = append(nstring,ms)
+								}
 							}
 							sort.Slice(nstring,func(i,j int) bool { return nstring[i] < nstring[j]})
-							nextString = strings.Join(nstring,"/")
+							nextString = strings.Join(nstring,"#")
 							is.Add(Item{rule,nextString,0})
 							//is.Add(Item{rule,"",0})
 						}
