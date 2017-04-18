@@ -61,7 +61,7 @@ func (r *Rule) Show(arrow string, mark int) string {
 	return str
 }
 
-func IsTerminals(symbol string) bool { return !unicode.IsUpper((rune(symbol[0]))) }
+func IsTerminals(symbol string) bool { return len(symbol) == 0 || !unicode.IsUpper((rune(symbol[0]))) }
 
 // Grammar is a collection of rules
 type Grammar struct {
