@@ -26,10 +26,19 @@ var G = &Grammar{ []*Rule{
 	{"SimpleStmt",[]string{"Assignment"}},
 	{"SimpleStmt",[]string{"identifier","[","int","]"}},
 	// 表达式
-	{"Expression",[]string{"+","PrimaryExpr"}},
-	{"Expression",[]string{"-","PrimaryExpr"}},
-	{"Expression",[]string{"!","PrimaryExpr"}},
+	// TODO: FILL FUNCTION [ZFN]Primary()
+	{"Expression",[]string{"+","PrimaryExpr","ZPrimary"}},
+	{"ZPrimary",[]string{""}},
+
+	{"Expression",[]string{"-","PrimaryExpr","FPrimaryExpr"}},
+	{"FPrimary",[]string{""}},
+
+	{"Expression",[]string{"!","PrimaryExpr","NPrimary"}},
+	{"NPrimary",[]string{""}},
+
+	// this need do notiong
 	{"Expression",[]string{"PrimaryExpr"}},
+
 	{"Expression",[]string{"Expression","||","Expression"}},
 	{"Expression",[]string{"Expression","&&","Expression"}},
 	{"Expression",[]string{"Expression","==","Expression"}},
@@ -44,15 +53,28 @@ var G = &Grammar{ []*Rule{
 	{"PrimaryExpr",[]string{"Operand"}},
 	{"PrimaryExpr",[]string{"PrimaryExpr","Index"}},
 	{"Index",[]string{"[","Expression","]"}},
+
 	// Operand
+	// 虽然有语义动作，然并卵
 	{"Operand",[]string{"Literal"}},
-	{"Operand",[]string{"identifier"}},
+
+	{"Operand",[]string{"identifier","Id2Operand"}},
+	{"Id2Operand",[]string{""}},
+
+	// need do nothing
 	{"Operand",[]string{"(","Expression",")"}},
-	{"Literal",[]string{"int"}},
-	{"Literal",[]string{"float"}},
+
+	{"Literal",[]string{"int","Lexval"}},
+	{"Lexval",[]string{""}},
+
 	// 声明
-	{"Declaration",[]string{"identifier",":=","Expression"}},
-	{"Declaration",[]string{"identifier","Type"}},
+	{"Declaration",[]string{"identifier","CheckDup",":=","Expression","InstallId"}},
+	{"Declaration",[]string{"identifier", "CheckDup","Type","InstallArray"}},
+	{"CheckDup",[]string{""}},
+	// TODO: finish function
+	{"InstallId",[]string{""}},
+	{"InstallArray",[]string{""}},
+
 	// Blocks
 	{"Block",[]string{"{","StatementList","}"}},
 

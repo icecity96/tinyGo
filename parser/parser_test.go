@@ -10,14 +10,8 @@ import (
 
 func TestNewParser(t *testing.T) {
 	src := []byte(`i := 1
-	if i > 1 && i < 5 {
-	 i = i + 1
-	 }
-	 for j := 1; j >0 ; j = j -1 {
-	  i = i + 1
-	 }
-	 k[5]var
-	 k[1] = 1`)
+	i = i + 2
+	`)
 	var s scanner.Scanner
 	file := mytoken.Newfile("",0,len(src))
 	G.CollectSymbols()
@@ -25,8 +19,8 @@ func TestNewParser(t *testing.T) {
 	p := NewParser(ac)
 	s.Init(file,src,nil,scanner.ScanComments)
 	for {
-		_, tok, _ := s.Scan()
-		ok,_ := p.Parser(&tok,"Program",true)
+		_, tok, lit := s.Scan()
+		ok,_ := p.Parser(&newToken{&tok,lit},"Program",true)
 		if ok {
 			break
 		}
@@ -49,8 +43,8 @@ func TestNewParser2(t *testing.T) {
 	p := NewParser(ac)
 	s.Init(file,src,nil,scanner.ScanComments)
 	for {
-		_, tok, _ := s.Scan()
-		ok,_ := p.Parser(&tok,"E'",true)
+		_, tok, lit := s.Scan()
+		ok,_ := p.Parser(&newToken{&tok,lit},"E'",true)
 		if ok {
 			break
 		}

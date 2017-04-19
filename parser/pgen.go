@@ -51,6 +51,9 @@ func (i Item) NextSym() (sym string, end bool) {
 	if i.pos == len(i.rule.pattern) {
 		return "", true
 	}
+	if i.pos+1 == len(i.rule.pattern) && i.rule.pattern[0] == "" {
+		return "", true
+	}
 	return i.rule.pattern[i.pos], false
 }
 
