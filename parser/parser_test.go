@@ -10,7 +10,9 @@ import (
 
 func TestNewParser(t *testing.T) {
 	src := []byte(`i := 1
-	i = i + 2
+	j := 2
+	m := i
+	j = i + m + 3
 	`)
 	var s scanner.Scanner
 	file := mytoken.Newfile("",0,len(src))

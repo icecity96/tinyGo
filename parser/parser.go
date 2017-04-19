@@ -3,7 +3,6 @@ package parser
 import (
 	"fmt"
 	"myGo/mytoken"
-	"strconv"
 )
 
 // parser manages the parsing process
@@ -30,13 +29,6 @@ func (nt *newToken) String() string {
 	return nt.tok.String()
 }
 
-var SymbolTables map[int]map[string]int = map[int]map[string]int {
-	0 : {},
-}
-// 全局变量符号表
-var roorTable int = 0
-// 当前符号表深度
-var currentTableDeepth = 0
 
 type Node struct {
 	val int		// node 的值
@@ -49,16 +41,20 @@ var semStack = make([]Node,1024)
 var top = 0
 // TODO: fill
 // Note: 有些规约里面虽然有语义动作，但不会对语义分析栈造成影响，所以无需为其构建单独的处理函数
-var FunctionTables  = map[string]func(token *newToken) {
+var FunctionTables  = map[string]func() {
 	"CheckDup" : CheckDup,
 	"Lexval" : Lexval,
 	"Id2Operand" : Id2Operand,
+	"InstallId" : InstallId,
+	"InstallArray": InstallArray,
+	"AddExpr": AddExpr,
 }
 
 
 //前一个有值的词法单元
 var preToke newToken
-
+var preId	newToken
+var preInt 	newToken
 func (p *Parser) Parser(tok *newToken, start string,trace bool) (bool, error) {
 	for {
 		action, ok := p.actions[p.stack[len(p.stack)-1]][tok.String()]
@@ -68,6 +64,12 @@ func (p *Parser) Parser(tok *newToken, start string,trace bool) (bool, error) {
 		switch action.(type) {
 		case Shift:
 			preToke = *tok
+			if tok.String() == "identifier" {
+				preId = *tok
+			}
+			if tok.String() == "int" {
+				preInt = *tok
+			}
 			nextState := action.(Shift).state
 			p.data = append(p.data, tok.String())
 			p.stack = append(p.stack, nextState)
@@ -82,7 +84,7 @@ func (p *Parser) Parser(tok *newToken, start string,trace bool) (bool, error) {
 				popCount := len(rule.pattern)
 				p.stack = p.stack[0 : len(p.stack) - popCount]
 			} else {
-				FunctionTables[rule.symbol](tok)
+				FunctionTables[rule.symbol]()
 			}
 
 			if rule.symbol == start {

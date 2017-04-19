@@ -45,12 +45,17 @@ var G = &Grammar{ []*Rule{
 	{"Expression",[]string{"Expression","!=","Expression"}},
 	{"Expression",[]string{"Expression",">","Expression"}},
 	{"Expression",[]string{"Expression","<","Expression"}},
-	{"Expression",[]string{"Expression","+","Expression"}},
+
+	{"Expression",[]string{"Expression","+","Expression","AddExpr"}},
+	{"AddExpr",[]string{""}},
+
 	{"Expression",[]string{"Expression","-","Expression"}},
 	{"Expression",[]string{"Expression","*","Expression"}},
 	{"Expression",[]string{"Expression","/","Expression"}},
 
+	// DO nothing
 	{"PrimaryExpr",[]string{"Operand"}},
+
 	{"PrimaryExpr",[]string{"PrimaryExpr","Index"}},
 	{"Index",[]string{"[","Expression","]"}},
 
@@ -71,7 +76,6 @@ var G = &Grammar{ []*Rule{
 	{"Declaration",[]string{"identifier","CheckDup",":=","Expression","InstallId"}},
 	{"Declaration",[]string{"identifier", "CheckDup","Type","InstallArray"}},
 	{"CheckDup",[]string{""}},
-	// TODO: finish function
 	{"InstallId",[]string{""}},
 	{"InstallArray",[]string{""}},
 
@@ -80,7 +84,9 @@ var G = &Grammar{ []*Rule{
 
 	{"StatementList",[]string{"Statement","StatementList"}},
 	{"StatementList",[]string{"Statement"}},
+
 	// 类型
+	// need do nothing
 	{"Type",[]string{"[","int","]","var"}},
 },nil}
 

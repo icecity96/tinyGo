@@ -41,7 +41,6 @@ func (sm SymbolMap) Dump(log log.Logger, lable string) {
 //		Expr := Term + Term
 // we use the first char to diff terminal and noterminal
 type Rule struct {
-
 	// The rule name the first char must be Up
 	symbol string
 	// the parrern of symbols
