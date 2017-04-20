@@ -3,6 +3,7 @@ package parser
 import (
 	"fmt"
 	"strconv"
+	"os"
 )
 
 var currentOffset = 0
@@ -121,9 +122,128 @@ func AddExpr() {
 		num: semStack[top-2].val + semStack[top-1].val,
 	}
 	SymbolTables[currentTable][t] = attr
+	currentOffset = currentOffset + 4
 	numTemp++
 	top = top - 2
 	semStack[top] = Node{val:attr.num, id:t}
 	top++
 }
 
+func SubExpr() {
+	t := "t" + strconv.Itoa(numTemp)
+	fmt.Print("t",t," = ")
+	if semStack[top-2].id == "" {
+		fmt.Print(semStack[top-2].val," - ")
+	} else {
+		fmt.Print(semStack[top-2].id," - ")
+	}
+	if semStack[top-1].id == "" {
+		fmt.Println(semStack[top-1].val)
+	} else {
+		fmt.Println(semStack[top-1].id)
+	}
+	attr := Attribute{
+		tp: 1,
+		len: 1,
+		offset: currentOffset,
+		num: semStack[top-2].val - semStack[top-1].val,
+	}
+	SymbolTables[currentTable][t] = attr
+	currentOffset = currentOffset + 4
+	numTemp++
+	top = top - 2
+	semStack[top] = Node{val:attr.num, id:t}
+	top++
+}
+
+func MulExpr() {
+	t := "t" + strconv.Itoa(numTemp)
+	fmt.Print("t",t," = ")
+	if semStack[top-2].id == "" {
+		fmt.Print(semStack[top-2].val," * ")
+	} else {
+		fmt.Print(semStack[top-2].id," * ")
+	}
+	if semStack[top-1].id == "" {
+		fmt.Println(semStack[top-1].val)
+	} else {
+		fmt.Println(semStack[top-1].id)
+	}
+	attr := Attribute{
+		tp: 1,
+		len: 1,
+		offset: currentOffset,
+		num: semStack[top-2].val * semStack[top-1].val,
+	}
+	SymbolTables[currentTable][t] = attr
+	currentOffset = currentOffset + 4
+	numTemp++
+	top = top - 2
+	semStack[top] = Node{val:attr.num, id:t}
+	top++
+}
+
+func DivExpr() {
+	t := "t" + strconv.Itoa(numTemp)
+	fmt.Print("t",t," = ")
+	if semStack[top-2].id == "" {
+		fmt.Print(semStack[top-2].val," / ")
+	} else {
+		fmt.Print(semStack[top-2].id," / ")
+	}
+	if semStack[top-1].val == 0 {
+		fmt.Errorf("divide 0!!!")
+		os.Exit(1)
+	}
+	if semStack[top-1].id == "" {
+		fmt.Println(semStack[top-1].val)
+	} else {
+		fmt.Println(semStack[top-1].id)
+	}
+	attr := Attribute{
+		tp: 1,
+		len: 1,
+		offset: currentOffset,
+		num: semStack[top-2].val / semStack[top-1].val,
+	}
+	SymbolTables[currentTable][t] = attr
+	currentOffset = currentOffset + 4
+	numTemp++
+	top = top - 2
+	semStack[top] = Node{val:attr.num, id:t}
+	top++
+}
+
+func LogicOr() {
+	t := "t" + strconv.Itoa(numTemp)
+	fmt.Print("t",t," = ")
+	if semStack[top-2].id == "" {
+		fmt.Print(bool(semStack[top-2].val)," and ")
+	} else {
+		fmt.Print(semStack[top-2].id," and ")
+	}
+	if semStack[top-1].id == "" {
+		fmt.Println(bool(semStack[top-1].val))
+	} else {
+		fmt.Println(semStack[top-1].id)
+	}
+
+	val := semStack[top-2].val * semStack[top-1].val
+	if val != 0 {
+		val = 1
+	}
+
+	attr := Attribute{
+		tp: 0,
+		len: 1,
+		offset: currentOffset,
+		num: val,
+	}
+
+	SymbolTables[currentTable][t] = attr
+	currentOffset = currentOffset + 1
+	numTemp++
+	top = top - 2
+	semStack[top] = Node{val:attr.num, id:t}
+	top++
+}

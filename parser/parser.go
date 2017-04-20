@@ -48,6 +48,10 @@ var FunctionTables  = map[string]func() {
 	"InstallId" : InstallId,
 	"InstallArray": InstallArray,
 	"AddExpr": AddExpr,
+	"SubExpr": SubExpr,
+	"MulExpr": MulExpr,
+	"DivExpr": DivExpr,
+	"LogicOr": LogicOr,
 }
 
 

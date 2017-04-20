@@ -39,9 +39,15 @@ var G = &Grammar{ []*Rule{
 	// this need do notiong
 	{"Expression",[]string{"PrimaryExpr"}},
 
-	{"Expression",[]string{"Expression","||","Expression"}},
-	{"Expression",[]string{"Expression","&&","Expression"}},
-	{"Expression",[]string{"Expression","==","Expression"}},
+	{"Expression",[]string{"Expression","||","Expression","LogicOr"}},
+	{"LogicOr",[]string{""}},
+	// TODO
+	{"Expression",[]string{"Expression","&&","Expression","LogicAnd"}},
+	{"LogicAnd",[]string{""}},
+
+	{"Expression",[]string{"Expression","==","Expression","Equal"}},
+	{"Equal",[]string{""}},
+
 	{"Expression",[]string{"Expression","!=","Expression"}},
 	{"Expression",[]string{"Expression",">","Expression"}},
 	{"Expression",[]string{"Expression","<","Expression"}},
@@ -49,9 +55,14 @@ var G = &Grammar{ []*Rule{
 	{"Expression",[]string{"Expression","+","Expression","AddExpr"}},
 	{"AddExpr",[]string{""}},
 
-	{"Expression",[]string{"Expression","-","Expression"}},
-	{"Expression",[]string{"Expression","*","Expression"}},
-	{"Expression",[]string{"Expression","/","Expression"}},
+	{"Expression",[]string{"Expression","-","Expression","SubExpr"}},
+	{"SubExpr",[]string{""}},
+
+	{"Expression",[]string{"Expression","*","Expression","MulExpr"}},
+	{"MulExpr",[]string{""}},
+
+	{"Expression",[]string{"Expression","/","Expression","DivExpr"}},
+	{"DivExpr",[]string{""}},
 
 	// DO nothing
 	{"PrimaryExpr",[]string{"Operand"}},
