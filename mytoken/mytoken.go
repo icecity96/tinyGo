@@ -173,7 +173,7 @@ var tokens = [...]string{
 
 	RETURN: "return",
 
-	VAR:  "var",
+	VAR: "var",
 }
 
 // String returns the string corresponding to the token tok.
@@ -256,7 +256,7 @@ func (tok Token) IsKeyword() bool {
 	return keyword_beg < tok && tok < keyword_end
 }
 
-func  IsUnary_op(op string) bool {
+func IsUnary_op(op string) bool {
 	return op == "+" || op == "-" || op == "!" || op == "^" || op == "*" || op == "&"
 }
 
@@ -272,6 +272,6 @@ func isMul_op(op string) bool {
 	return op == "*" || op == "/" || op == "%" || op == "<<" || op == ">>" || op == "&" || op == "&^"
 }
 
-func  IsBinary_op(op string) bool {
+func IsBinary_op(op string) bool {
 	return op == "||" || op == "&&" || isRel_op(op) || isAdd_op(op) || isMul_op(op)
 }

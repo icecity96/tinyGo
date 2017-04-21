@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"os"
 	"myGo/codegen"
+	"os"
 	"strings"
 )
 

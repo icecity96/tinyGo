@@ -8,19 +8,17 @@ import (
 )
 
 // Action is an entry in the action table
-type Action interface {}
+type Action interface{}
 
 // Shift is an action means : accept the token and change state
 type Shift struct {
 	state int
 }
 
-
 // Reduce
 type Reduce struct {
 	rule *Rule
 }
-
 
 // ActionTable
 type ActionTable []map[string]Action
@@ -38,11 +36,11 @@ func (at ActionTable) Dump() {
 
 // Item is a partially-parsed production
 type Item struct {
-	rule 	*Rule
-	next	string
+	rule *Rule
+	next string
 	// E -> .Item + Item  ====== pos : 0
 	// E -> Item. + Item  ====== pos : 1
-	pos 	int
+	pos int
 }
 
 // NextSym returns the next symbol the Item would match and
@@ -60,9 +58,9 @@ func (i Item) NextSym() (sym string, end bool) {
 // 项族
 type ItemSet map[Item]bool
 
-func (is ItemSet) Add(item Item) { is[item] = true }
+func (is ItemSet) Add(item Item)      { is[item] = true }
 func (is ItemSet) Has(item Item) bool { return is[item] }
-func (is ItemSet) Empty() bool { return len(is) == 0 }
+func (is ItemSet) Empty() bool        { return len(is) == 0 }
 func (is ItemSet) Equal(other ItemSet) bool {
 	if len(is) != len(other) {
 		return false
@@ -97,15 +95,15 @@ func (is ItemSet) Closure(grammar *Grammar) {
 				for _, rule := range grammar.rules {
 					if rule.symbol == sym {
 						if pos := item.pos; pos+1 == len(item.rule.pattern) {
-							is.Add(Item{rule, item.next,0})
+							is.Add(Item{rule, item.next, 0})
 							//is.Add(Item{rule, "",0})
 						} else {
 							var nextString string
 							mstring := make(map[string]bool)
 							var nstring []string
 							for set := range first[item.rule.pattern[pos+1]] {
-								if set=="" {
-									for _,m := range strings.Split(item.next,"#") {
+								if set == "" {
+									for _, m := range strings.Split(item.next, "#") {
 										mstring[m] = true
 									}
 								}
@@ -113,12 +111,12 @@ func (is ItemSet) Closure(grammar *Grammar) {
 							}
 							for ms := range mstring {
 								if mstring[ms] {
-									nstring = append(nstring,ms)
+									nstring = append(nstring, ms)
 								}
 							}
-							sort.Slice(nstring,func(i,j int) bool { return nstring[i] < nstring[j]})
-							nextString = strings.Join(nstring,"#")
-							is.Add(Item{rule,nextString,0})
+							sort.Slice(nstring, func(i, j int) bool { return nstring[i] < nstring[j] })
+							nextString = strings.Join(nstring, "#")
+							is.Add(Item{rule, nextString, 0})
 							//is.Add(Item{rule,"",0})
 						}
 						changed = true
@@ -132,10 +130,10 @@ func (is ItemSet) Closure(grammar *Grammar) {
 
 // GOTO
 func (is ItemSet) Goto(grammar *Grammar, x string) ItemSet {
-	out := make(ItemSet)	// 将J初始化为空
+	out := make(ItemSet) // 将J初始化为空
 	for item := range is {
 		if sym, end := item.NextSym(); !end && sym == x {
-			out.Add(Item{item.rule, item.next,item.pos+1})
+			out.Add(Item{item.rule, item.next, item.pos + 1})
 			//out.Add(Item{item.rule, "",item.pos+1})
 		}
 	}
@@ -144,15 +142,15 @@ func (is ItemSet) Goto(grammar *Grammar, x string) ItemSet {
 }
 
 func ComputeActions(grammar *Grammar) ActionTable {
-	first 	:= grammar.First()
-	follow 	:= grammar.Follow(first)
+	first := grammar.First()
+	follow := grammar.Follow(first)
 
 	var allActions ActionTable
 
 	// 将C初始化为{CLOSURE}([S'->.S,$])
 	states := []ItemSet{
-		ItemSet{Item{grammar.rules[0],"EOF",0}: true},
-//		ItemSet{Item{grammar.rules[0],"",0}: true},
+		ItemSet{Item{grammar.rules[0], "EOF", 0}: true},
+		//		ItemSet{Item{grammar.rules[0],"",0}: true},
 	}
 	states[0].Closure(grammar)
 
@@ -199,7 +197,7 @@ func ComputeActions(grammar *Grammar) ActionTable {
 			f := follow[item.rule.symbol]
 			for term := range f {
 				if actions[term] != nil {
-					for _,a := range item.rule.pattern {
+					for _, a := range item.rule.pattern {
 						//fmt.Println(a,precedence(a)," ",precedence(term),term)
 						if precedence(a) > precedence(term) {
 							actions[term] = Reduce{item.rule}
@@ -223,13 +221,13 @@ func precedence(item string) int {
 		return 1
 	case "&&":
 		return 2
-	case "==","!=",">","<":
+	case "==", "!=", ">", "<":
 		return 3
-	case "+","-":
+	case "+", "-":
 		return 4
-	case "*","/":
+	case "*", "/":
 		return 5
-	case "[","]":
+	case "[", "]":
 		return 6
 	default:
 		return -1

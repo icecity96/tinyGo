@@ -457,6 +457,6 @@ func (d *GenDecl) declNode() {}
 //
 
 type File struct {
-	Decls []Decl // top-level declarations; or nil
-	Unresolved []*Ident        // unresolved identifiers in this file
+	Decls      []Decl   // top-level declarations; or nil
+	Unresolved []*Ident // unresolved identifiers in this file
 }

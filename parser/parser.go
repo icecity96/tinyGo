@@ -7,16 +7,16 @@ import (
 
 // parser manages the parsing process
 type Parser struct {
-	actions 	ActionTable
-	stack 		[]int
-	data 		[]interface{}
+	actions ActionTable
+	stack   []int
+	data    []interface{}
 }
 
 func NewParser(ac ActionTable) *Parser {
 	return &Parser{
 		actions: ac,
-		stack: 	[]int{0},
-		data: 	[]interface{}{},
+		stack:   []int{0},
+		data:    []interface{}{},
 	}
 }
 
@@ -29,37 +29,45 @@ func (nt *newToken) String() string {
 	return nt.tok.String()
 }
 
-
 type Node struct {
-	val int		// node 的值
-	id  string	// 名称，用于符号表和中间代码生成
+	val  int    // node 的值
+	id   string // 名称，用于符号表和中间代码生成
 	code string // 用于代码生成
 }
 
 // 语义分析栈,用来存放节点(只有非终结符才能生成节点)
-var semStack = make([]Node,1024)
+var semStack = make([]Node, 1024)
 var top = 0
+
 // TODO: fill
 // Note: 有些规约里面虽然有语义动作，但不会对语义分析栈造成影响，所以无需为其构建单独的处理函数
-var FunctionTables  = map[string]func() {
-	"CheckDup" : CheckDup,
-	"Lexval" : Lexval,
-	"Id2Operand" : Id2Operand,
-	"InstallId" : InstallId,
+var FunctionTables = map[string]func(){
+	"CheckDup":     CheckDup,
+	"Lexval":       Lexval,
+	"Id2Operand":   Id2Operand,
+	"InstallId":    InstallId,
 	"InstallArray": InstallArray,
-	"AddExpr": AddExpr,
-	"SubExpr": SubExpr,
-	"MulExpr": MulExpr,
-	"DivExpr": DivExpr,
-	"LogicOr": LogicOr,
+	"AddExpr":      AddExpr,
+	"SubExpr":      SubExpr,
+	"MulExpr":      MulExpr,
+	"DivExpr":      DivExpr,
+	"LogicAnd":     LogicAnd,
+	"LogicOr":      LogicOr,
+	"Equal":        Equal,
+	"NotEqual":     NotEqual,
+	"Large":        Large,
+	"Less":         Less,
+	"ZPrimary":     Zprimary,
+	"FPrimary":     Fprimary,
+	"NPrimary":     Nprimary,
 }
-
 
 //前一个有值的词法单元
 var preToke newToken
-var preId	newToken
-var preInt 	newToken
-func (p *Parser) Parser(tok *newToken, start string,trace bool) (bool, error) {
+var preId newToken
+var preInt newToken
+
+func (p *Parser) Parser(tok *newToken, start string, trace bool) (bool, error) {
 	for {
 		action, ok := p.actions[p.stack[len(p.stack)-1]][tok.String()]
 		if !ok {
@@ -80,13 +88,13 @@ func (p *Parser) Parser(tok *newToken, start string,trace bool) (bool, error) {
 			return false, nil
 		case Reduce:
 			rule := action.(Reduce).rule
-			if trace {
+			if !trace {
 				fmt.Printf("input %v => reduce %s -> %s\n", tok.String(), rule.pattern, rule.symbol)
 			}
 			// 如果发生空产生式我们就进行动作执行
-			if  rule.pattern[0] != "" {
+			if rule.pattern[0] != "" {
 				popCount := len(rule.pattern)
-				p.stack = p.stack[0 : len(p.stack) - popCount]
+				p.stack = p.stack[0 : len(p.stack)-popCount]
 			} else {
 				FunctionTables[rule.symbol]()
 			}
@@ -108,4 +116,3 @@ func (p *Parser) Parser(tok *newToken, start string,trace bool) (bool, error) {
 		}
 	}
 }
-

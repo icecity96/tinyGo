@@ -12,7 +12,7 @@ const middot = "\u00b7" // middle dot
 
 type SymbolSet map[string]bool
 
-func (ss SymbolSet) Add(s string) { ss[s] = true }
+func (ss SymbolSet) Add(s string)      { ss[s] = true }
 func (ss SymbolSet) Has(s string) bool { return ss[s] }
 func (ss SymbolSet) Merge(other SymbolSet) bool {
 	s := len(ss)
@@ -27,7 +27,7 @@ type SymbolMap map[string]SymbolSet
 
 func (sm SymbolMap) Dump(log log.Logger, lable string) {
 	log.Println(lable + ":")
-	for sym, set := range  sm{
+	for sym, set := range sm {
 		var setStr string
 		for s := range set {
 			setStr += s + " "
@@ -49,7 +49,7 @@ type Rule struct {
 
 func (r *Rule) Show(arrow string, mark int) string {
 	str := fmt.Sprintf("%s %s", r.symbol, arrow)
-	for i, pat := range r.pattern{
+	for i, pat := range r.pattern {
 		if i == mark {
 			str += middot
 		}
@@ -65,7 +65,7 @@ func IsTerminals(symbol string) bool { return len(symbol) == 0 || !unicode.IsUpp
 
 // Grammar is a collection of rules
 type Grammar struct {
-	rules 	[]*Rule
+	rules   []*Rule
 	symbols SymbolSet
 }
 
@@ -105,7 +105,7 @@ func (g *Grammar) First() (first SymbolMap) {
 	}
 
 	// Fill with grammars first outputs
-	for _, rule	:= range g.rules {
+	for _, rule := range g.rules {
 		set := first[rule.symbol]
 		if set == nil {
 			set = make(SymbolSet)
@@ -121,7 +121,7 @@ func (g *Grammar) First() (first SymbolMap) {
 			for symbol := range set {
 				if !IsTerminals(symbol) {
 					//set[symbol] = false
-					delete(set,symbol)
+					delete(set, symbol)
 				}
 				if set.Merge(first[symbol]) {
 					changed = true
