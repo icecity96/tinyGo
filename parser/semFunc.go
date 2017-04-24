@@ -493,10 +493,10 @@ func Nprimary() {
 	fmt.Println("")
 }
 
-var Lbegin = make([]string,100)
-var curlb  = 0
-var Lend   = make([]string,100)
-var curle  = 0
+var Lbegin = make([]string, 100)
+var curlb = 0
+var Lend = make([]string, 100)
+var curle = 0
 
 func For1() {
 	lab1 := "L" + strconv.Itoa(labelnum)
@@ -504,7 +504,7 @@ func For1() {
 	lab2 := "L" + strconv.Itoa(labelnum)
 	labelnum++
 	fmt.Println(lab1)
-	fmt.Println("if ", semStack[top-1].id,".false goto ", lab2)
+	fmt.Println("if ", semStack[top-1].id, ".false goto ", lab2)
 	Lbegin[curlb] = lab1
 	curlb++
 	Lend[curle] = lab2
@@ -514,17 +514,17 @@ func For1() {
 
 func NewST() {
 	totalTable++
-	SymbolTables[totalTable]	= make(map[string]Attribute)
+	SymbolTables[totalTable] = make(map[string]Attribute)
 	for num := range control[currentTable] {
-		control[totalTable] = append(control[totalTable],num)
+		control[totalTable] = append(control[totalTable], num)
 	}
-	control[totalTable] = append(control[totalTable],totalTable)
+	control[totalTable] = append(control[totalTable], totalTable)
 	currentTable = totalTable
 }
 
 func EndBlock() {
 	if curlb != 0 {
-		fmt.Println("goto ",Lbegin[curlb-1])
+		fmt.Println("goto ", Lbegin[curlb-1])
 		curlb--
 	}
 	if curle != 0 {
@@ -541,7 +541,7 @@ func EndBlock() {
 }
 
 func Assign() {
-	fmt.Print(semStack[top-2].id," = ")
+	fmt.Print(semStack[top-2].id, " = ")
 	if semStack[top-1].id == "" {
 		fmt.Println(semStack[top-1].val)
 	} else {
@@ -553,7 +553,7 @@ func Assign() {
 func IF1() {
 	lab2 := "L" + strconv.Itoa(labelnum)
 	labelnum++
-	fmt.Println("if ", semStack[top-1].id,".false goto ", lab2)
+	fmt.Println("if ", semStack[top-1].id, ".false goto ", lab2)
 	Lend[curle] = lab2
 	curle++
 	top--

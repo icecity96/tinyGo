@@ -60,11 +60,11 @@ var FunctionTables = map[string]func(){
 	"ZPrimary":     Zprimary,
 	"FPrimary":     Fprimary,
 	"NPrimary":     Nprimary,
-	"For1":	For1,
-	"NewST" : NewST,
-	"EndBlock": EndBlock,
-	"Assign" : Assign,
-	"IF1" : IF1,
+	"For1":         For1,
+	"NewST":        NewST,
+	"EndBlock":     EndBlock,
+	"Assign":       Assign,
+	"IF1":          IF1,
 }
 
 //前一个有值的词法单元
