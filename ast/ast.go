@@ -44,7 +44,6 @@ type Comment struct {
 func (c *Comment) Pos() mytoken.Pos { return c.Slash }
 func (c *Comment) End() mytoken.Pos { return mytoken.Pos(int(c.Slash) + len(c.Text)) }
 
-// TODO no //-style comment does this needed?
 // A CommentGroup represents a sequence of comments
 // with no other tokens and no empty lines between.
 //

@@ -60,6 +60,11 @@ var FunctionTables = map[string]func(){
 	"ZPrimary":     Zprimary,
 	"FPrimary":     Fprimary,
 	"NPrimary":     Nprimary,
+	"For1":	For1,
+	"NewST" : NewST,
+	"EndBlock": EndBlock,
+	"Assign" : Assign,
+	"IF1" : IF1,
 }
 
 //前一个有值的词法单元
@@ -89,7 +94,7 @@ func (p *Parser) Parser(tok *newToken, start string, trace bool) (bool, error) {
 		case Reduce:
 			rule := action.(Reduce).rule
 			if !trace {
-				fmt.Printf("input %v => reduce %s -> %s\n", tok.String(), rule.pattern, rule.symbol)
+				fmt.Printf("input %v => reduce %s -> %s\n", tok.lit, rule.pattern, rule.symbol)
 			}
 			// 如果发生空产生式我们就进行动作执行
 			if rule.pattern[0] != "" {

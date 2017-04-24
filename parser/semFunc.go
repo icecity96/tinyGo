@@ -30,9 +30,14 @@ var SymbolTables = map[int]map[string]Attribute{
 
 // 当前符号表深度
 var currentTable = 0
+var totalTable = 0
+var labelnum = 0
 
 // 符号表搜索
 func findSymbol(id string) (int, bool) {
+	if v, ok := SymbolTables[currentTable][preToke.lit]; ok {
+		return v.num, true
+	}
 	for i := range control[currentTable] {
 		if sym, ok := SymbolTables[i][id]; ok {
 			return sym.num, true
@@ -60,7 +65,7 @@ func Lexval() {
 }
 
 func CheckDup() {
-	if _, ok := findSymbol(preToke.lit); ok {
+	if _, ok := SymbolTables[currentTable][preToke.lit]; ok {
 		fmt.Println("重复声明变量")
 	}
 	node := Node{id: preToke.lit}
@@ -486,4 +491,70 @@ func Nprimary() {
 	numTemp++
 	semStack[top-1] = Node{val: attr.num, id: t}
 	fmt.Println("")
+}
+
+var Lbegin = make([]string,100)
+var curlb  = 0
+var Lend   = make([]string,100)
+var curle  = 0
+
+func For1() {
+	lab1 := "L" + strconv.Itoa(labelnum)
+	labelnum++
+	lab2 := "L" + strconv.Itoa(labelnum)
+	labelnum++
+	fmt.Println(lab1)
+	fmt.Println("if ", semStack[top-1].id,".false goto ", lab2)
+	Lbegin[curlb] = lab1
+	curlb++
+	Lend[curle] = lab2
+	curle++
+	top--
+}
+
+func NewST() {
+	totalTable++
+	SymbolTables[totalTable]	= make(map[string]Attribute)
+	for num := range control[currentTable] {
+		control[totalTable] = append(control[totalTable],num)
+	}
+	control[totalTable] = append(control[totalTable],totalTable)
+	currentTable = totalTable
+}
+
+func EndBlock() {
+	if curlb != 0 {
+		fmt.Println("goto ",Lbegin[curlb-1])
+		curlb--
+	}
+	if curle != 0 {
+		fmt.Println(Lend[curle-1])
+		curle--
+	}
+	var backSB int = 0
+	for num := range control[currentTable] {
+		if num > backSB && num != currentTable {
+			backSB = num
+		}
+	}
+	currentTable = backSB
+}
+
+func Assign() {
+	fmt.Print(semStack[top-2].id," = ")
+	if semStack[top-1].id == "" {
+		fmt.Println(semStack[top-1].val)
+	} else {
+		fmt.Println(semStack[top-1].id)
+	}
+	top = top - 2
+}
+
+func IF1() {
+	lab2 := "L" + strconv.Itoa(labelnum)
+	labelnum++
+	fmt.Println("if ", semStack[top-1].id,".false goto ", lab2)
+	Lend[curle] = lab2
+	curle++
+	top--
 }

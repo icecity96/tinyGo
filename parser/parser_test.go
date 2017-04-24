@@ -7,12 +7,34 @@ import (
 )
 
 // TODO: think about lalr
-
 func TestNewParser(t *testing.T) {
 	src := []byte(`i := -1
 	j := 2
-	m := i
-	j = i + m + 3
+	if j > i && i > 0{
+		i := 2
+	}
+	`)
+	var s scanner.Scanner
+	file := mytoken.Newfile("", 0, len(src))
+	G.CollectSymbols()
+	ac := ComputeActions(G)
+	p := NewParser(ac)
+	s.Init(file, src, nil, scanner.ScanComments)
+	for {
+		_, tok, lit := s.Scan()
+		ok, _ := p.Parser(&newToken{&tok, lit}, "Program", true)
+		if ok {
+			break
+		}
+	}
+}
+
+func TestFor(t *testing.T) {
+	src := []byte(`i := -1
+	for i < 1 {
+		j := 1
+		i = i + 1
+	}
 	`)
 	var s scanner.Scanner
 	file := mytoken.Newfile("", 0, len(src))

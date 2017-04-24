@@ -5,15 +5,20 @@ var G = &Grammar{[]*Rule{
 	// Grammer start:
 	{"Program", []string{"StatementList"}},
 	// for
-	{"ForStmt", []string{"for", "Expression", "Block"}},
+	{"ForStmt", []string{"for", "Expression","For1","Block"}},
+	{"For1",[]string{""}},
+
 	{"ForStmt", []string{"for", "ForClause", "Block"}},
 	{"ForClause", []string{"SimpleStmt", ";", "Expression", ";", "SimpleStmt"}},
 	// if
-	{"IfStmt", []string{"if", "Expression", "Block"}},
-	{"IfStmt", []string{"if", "Expression", "Block", "else", "IfStmt"}},
-	{"IfStmt", []string{"if", "Expression", "Block", "else", "Block"}},
+	{"IfStmt", []string{"if", "Expression", "IF1","Block"}},
+	{"IfStmt", []string{"if", "Expression", "IF1","Block", "else", "IfStmt"}},
+	{"IfStmt", []string{"if", "Expression", "IF1","Block", "else", "Block"}},
+	{"IF1",[]string{""}},
+
 	// assignment
-	{"Assignment", []string{"Expression", "=", "Expression"}},
+	{"Assignment", []string{"Expression", "=", "Expression","Assign"}},
+	{"Assign",[]string{""}},
 	// 语句
 	{"Statement", []string{"Declaration"}},
 	{"Statement", []string{"SimpleStmt"}},
@@ -96,7 +101,9 @@ var G = &Grammar{[]*Rule{
 	{"InstallArray", []string{""}},
 
 	// Blocks
-	{"Block", []string{"{", "StatementList", "}"}},
+	{"Block", []string{"{","NewST","StatementList","}","EndBlock"}},
+	{"NewST",[]string{""}},
+	{"EndBlock",[]string{""}},
 
 	{"StatementList", []string{"Statement", "StatementList"}},
 	{"StatementList", []string{"Statement"}},
